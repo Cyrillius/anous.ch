@@ -1,0 +1,126 @@
+/**
+ *  If you want to override some bootstrap variables, you have to change values here.
+ *  The list of variables are listed here bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss
+ */
+$icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/";
+$jumbotron-bg: white;
+
+$brand-success: #779D34;
+$brand-info:    #5bc0de;
+$brand-danger:  #AA4139;
+
+
+/**
+ *  Do not remove the comments below. It's the markers used by wiredep to inject
+ *  sass dependencies when defined in the bower.json of your dependencies
+ */
+// bower:scss
+// endbower
+
+/** 
+ * COLOR
+ */
+
+$color1-bg: #779D34;
+$color1-ft: lighten($color1-bg, 40%);
+$color1-ft-hover: lighten($color1-bg, 40%);
+$color1-bg-hover: darken($color1-bg,10%);
+$color1-dk: #232420;
+.color1{
+    background-color: $color1-bg; 
+    color: lighten($color1-bg, 40%);
+}
+
+$color2-bg: #AA4139;
+$color2-ft: lighten($color2-bg, 40%);
+$color2-ft-hover: lighten($color2-bg, 40%);
+$color2-bg-hover: darken($color2-bg,10%);
+$color2-dk: #272322;
+.color2{
+    background-color: $color2-bg; 
+    color: lighten($color2-bg, 40%);
+}
+
+$color3-bg: #CF6C1A;
+$color3-ft: lighten($color3-bg, 40%);
+$color3-ft-hover: lighten($color3-bg, 40%);
+$color3-bg-hover: darken($color3-bg,10%);
+$color3-dk: #272522;
+.color3{
+    background-color: $color3-bg; 
+    color: lighten($color3-bg, 40%);
+}
+
+$color4-bg: #67308D;
+$color4-ft: lighten($color4-bg, 40%);
+$color4-ft-hover: lighten($color4-bg, 40%);
+$color4-bg-hover: darken($color4-bg,10%);
+$color4-dk: #201C1E;
+.color4{
+    background-color: $color4-bg; 
+    color: lighten($color4-bg, 40%);
+}
+
+
+body {
+    background-color: $gray-lighter;
+}   
+
+.container-block{
+    margin-bottom:20px;
+}
+
+.btn-success { 
+    background-color: $color1-bg; 
+    color: lighten($color1-bg, 40%);
+}
+.btn-success:hover,.btn-success:focus {
+    background-color: darken($color1-bg, 10%); 
+    color: lighten($color1-bg, 40%);
+}
+
+.btn-warning { 
+    background-color: $color3-bg; 
+    color: lighten($color3-bg, 40%);
+}
+.btn-warning:hover,.btn-warning:focus { 
+    background-color: darken($color3-bg, 10%); 
+    color: lighten($color3-bg, 40%);
+}
+
+.btn-danger { 
+    background-color: $color2-bg; 
+    color: lighten($color2-bg, 40%);
+}
+.btn-danger:hover,.btn-danger:focus { 
+    background-color: darken($color2-bg, 10%); 
+    color: lighten($color2-bg, 40%);
+}
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+@media (min-width: 1400px){
+  .container {
+    width: auto;
+    margin-left:300px;
+    margin-right:350px;
+    margin-bottom: 50px;
+  }
+}
+
+
+@media (max-width: 1400px){
+  .container {
+    margin-top:410px;
+    margin-bottom: 50px;
+    width:100%;
+  }
+}
+
+
+/**
+ *  Do not remove the comments below. It's the markers used by gulp-inject to inject
+ *  all your sass files automatically
+ */
+// injector
+// endinjector

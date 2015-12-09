@@ -1,0 +1,58 @@
+<div id="myAnnounceFilter">
+  <form class="form-horizontal">
+    <div class="form-group ">
+      <label class="text-right col-sm-2" for="keyword">Mots-clefs: </label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="keyword" placeholder="mots-clefs">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="text-right col-sm-2">Lieu: </label> 
+      <div class="form-group col-sm-5">
+        <label class="text-right  col-sm-4" for="canton">Canton: </label>
+        <div class="col-sm-6">
+          <select id="canton" class="form-control">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group col-sm-5">
+        <label class="text-right  col-sm-4" for="commune">Commune: </label>
+        <div class="col-sm-6">
+          <select id="commune" class="form-control">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="text-right col-sm-2">Prix: </label>
+      <div class="form-group col-sm-5">
+        <label class="text-right col-sm-4" for="minBudget">à partir de: </label>
+        <div class="col-sm-6">
+          <input type="value" class="form-control fluid" id="minBudget" placeholder="-" value="0">
+        </div>
+      </div>
+      <div class="form-group col-sm-5">
+        <label class="text-right col-sm-4" for="maxBudget">jusqu'à: </label>
+        <div class="col-sm-6">
+          <input type="value" class="form-control" id="maxBudget" placeholder="-" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="button" class="btn btn-success col-sm-3 col-sm-offset-3">Appliquer le filtre</button>
+    </div>
+  </form>
+</div>

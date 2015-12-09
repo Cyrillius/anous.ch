@@ -1,0 +1,45 @@
+footer {
+  position:fixed;
+  left:0px;
+  bottom:0px;
+  height:50px;
+  width:100%;
+  background:#999;
+  background-color: $color1-dk;
+  z-index:20;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+footer .btn {
+  line-height:80%;
+}
+
+#footer-left {
+  width:80%;
+  line-height: 120%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  padding-left:20px;
+  padding-right:20px;
+}
+
+footer a, footer .btn{
+  margin-left: 5px;
+  margin-right: 5px;  
+}
+
+#footer-right {
+  width:20%;
+  line-height: 120%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: row;
+  padding-left:20px;
+  padding-right:20px;
+}

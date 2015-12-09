@@ -1,0 +1,409 @@
+{
+  "{\"filename\":\"/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js\",\"env\":{},\"retainLines\":false,\"highlightCode\":true,\"suppressDeprecationMessages\":false,\"presets\":[],\"plugins\":[],\"ignore\":[],\"code\":true,\"metadata\":true,\"ast\":true,\"comments\":true,\"compact\":\"auto\",\"babelrc\":true,\"sourceType\":\"module\",\"moduleIds\":false}:6.2.1": {
+    "metadata": {
+      "usedHelpers": [],
+      "marked": [],
+      "modules": {
+        "imports": [
+          {
+            "source": "gulp",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "gulp"
+              }
+            ]
+          },
+          {
+            "source": "gulp-load-plugins",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "gulpLoadPlugins"
+              }
+            ]
+          },
+          {
+            "source": "browser-sync",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "browserSync"
+              }
+            ]
+          },
+          {
+            "source": "del",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "del"
+              }
+            ]
+          },
+          {
+            "source": "wiredep",
+            "imported": [
+              "stream"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "stream",
+                "local": "wiredep"
+              }
+            ]
+          }
+        ],
+        "exports": {
+          "exported": [],
+          "specifiers": []
+        }
+      }
+    },
+    "options": {
+      "filename": "/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js",
+      "filenameRelative": "/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js",
+      "env": {},
+      "retainLines": false,
+      "highlightCode": true,
+      "suppressDeprecationMessages": false,
+      "presets": [],
+      "plugins": [],
+      "ignore": [],
+      "code": true,
+      "metadata": true,
+      "ast": false,
+      "comments": true,
+      "compact": "auto",
+      "sourceMap": "both",
+      "sourceMaps": "both",
+      "sourceMapTarget": "gulpfile.babel.js",
+      "sourceFileName": "gulpfile.babel.js",
+      "babelrc": true,
+      "sourceType": "module",
+      "moduleIds": false,
+      "basename": "gulpfile.babel"
+    },
+    "ignored": false,
+    "code": "// generated on 2015-11-27 using generator-gulp-webapp 1.0.3\nimport gulp from 'gulp';\nimport gulpLoadPlugins from 'gulp-load-plugins';\nimport browserSync from 'browser-sync';\nimport del from 'del';\nimport { stream as wiredep } from 'wiredep';\n\nconst $ = gulpLoadPlugins();\nconst reload = browserSync.reload;\n\ngulp.task('styles', () => {\n  return gulp.src('app/styles/*.scss').pipe($.plumber()).pipe($.sourcemaps.init()).pipe($.sass.sync({\n    outputStyle: 'expanded',\n    precision: 10,\n    includePaths: ['.']\n  }).on('error', $.sass.logError)).pipe($.autoprefixer({ browsers: ['last 1 version'] })).pipe($.sourcemaps.write()).pipe(gulp.dest('.tmp/styles')).pipe(reload({ stream: true }));\n});\n\nfunction lint(files, options) {\n  return () => {\n    return gulp.src(files).pipe(reload({ stream: true, once: true })).pipe($.eslint(options)).pipe($.eslint.format()).pipe($.if(!browserSync.active, $.eslint.failAfterError()));\n  };\n}\nconst testLintOptions = {\n  env: {\n    mocha: true\n  }\n};\n\ngulp.task('lint', lint('app/scripts/**/*.js'));\ngulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));\n\ngulp.task('html', ['styles'], () => {\n  const assets = $.useref.assets({ searchPath: ['.tmp', 'app', '.'] });\n\n  return gulp.src('app/*.html').pipe(assets).pipe($.if('*.js', $.uglify())).pipe($.if('*.css', $.minifyCss({ compatibility: '*' }))).pipe(assets.restore()).pipe($.useref()).pipe($.if('*.html', $.minifyHtml({ conditionals: true, loose: true }))).pipe(gulp.dest('dist'));\n});\n\ngulp.task('images', () => {\n  return gulp.src('app/images/**/*').pipe($.if($.if.isFile, $.cache($.imagemin({\n    progressive: true,\n    interlaced: true,\n    // don't remove IDs from SVGs, they are often used\n    // as hooks for embedding and styling\n    svgoPlugins: [{ cleanupIDs: false }]\n  })).on('error', function (err) {\n    console.log(err);\n    this.end();\n  }))).pipe(gulp.dest('dist/images'));\n});\n\ngulp.task('fonts', () => {\n  return gulp.src(require('main-bower-files')({\n    filter: '**/*.{eot,svg,ttf,woff,woff2}'\n  }).concat('app/fonts/**/*')).pipe(gulp.dest('.tmp/fonts')).pipe(gulp.dest('dist/fonts'));\n});\n\ngulp.task('extras', () => {\n  return gulp.src(['app/*.*', '!app/*.html'], {\n    dot: true\n  }).pipe(gulp.dest('dist'));\n});\n\ngulp.task('clean', del.bind(null, ['.tmp', 'dist']));\n\ngulp.task('serve', ['styles', 'fonts'], () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['.tmp', 'app'],\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch(['app/*.html', 'app/scripts/**/*.js', 'app/images/**/*', '.tmp/fonts/**/*']).on('change', reload);\n\n  gulp.watch('app/styles/**/*.scss', ['styles']);\n  gulp.watch('app/fonts/**/*', ['fonts']);\n  gulp.watch('bower.json', ['wiredep', 'fonts']);\n});\n\ngulp.task('serve:dist', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['dist']\n    }\n  });\n});\n\ngulp.task('serve:test', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    ui: false,\n    server: {\n      baseDir: 'test',\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch('test/spec/**/*.js').on('change', reload);\n  gulp.watch('test/spec/**/*.js', ['lint:test']);\n});\n\n// inject bower components\ngulp.task('wiredep', () => {\n  gulp.src('app/styles/*.scss').pipe(wiredep({\n    ignorePath: /^(\\.\\.\\/)+/\n  })).pipe(gulp.dest('app/styles'));\n\n  gulp.src('app/*.html').pipe(wiredep({\n    exclude: ['bootstrap-sass'],\n    ignorePath: /^(\\.\\.\\/)*\\.\\./\n  })).pipe(gulp.dest('app'));\n});\n\ngulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {\n  return gulp.src('dist/**/*').pipe($.size({ title: 'build', gzip: true }));\n});\n\ngulp.task('default', ['clean'], () => {\n  gulp.start('build');\n});\n//# sourceMappingURL=data:application/json;base64,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Q2hELENBQUM7OztBQUFDLEFBR0gsSUFBSSxDQUFDLElBQUksQ0FBQyxTQUFTLEVBQUUsTUFBTTtBQUN6QixNQUFJLENBQUMsR0FBRyxDQUFDLG1CQUFtQixDQUFDLENBQzFCLElBQUksQ0FBQyxPQUFPLENBQUM7QUFDWixjQUFVLEVBQUUsWUFBWTtHQUN6QixDQUFDLENBQUMsQ0FDRixJQUFJLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsQ0FBQyxDQUFDOztBQUVqQyxNQUFJLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQyxDQUNuQixJQUFJLENBQUMsT0FBTyxDQUFDO0FBQ1osV0FBTyxFQUFFLENBQUMsZ0JBQWdCLENBQUM7QUFDM0IsY0FBVSxFQUFFLGdCQUFnQjtHQUM3QixDQUFDLENBQUMsQ0FDRixJQUFJLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDO0NBQzNCLENBQUMsQ0FBQzs7QUFFSCxJQUFJLENBQUMsSUFBSSxDQUFDLE9BQU8sRUFBRSxDQUFDLE1BQU0sRUFBRSxNQUFNLEVBQUUsUUFBUSxFQUFFLE9BQU8sRUFBRSxRQUFRLENBQUMsRUFBRSxNQUFNO0FBQ3RFLFNBQU8sSUFBSSxDQUFDLEdBQUcsQ0FBQyxXQUFXLENBQUMsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDLElBQUksQ0FBQyxFQUFDLEtBQUssRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBQyxDQUFDLENBQUMsQ0FBQztDQUN6RSxDQUFDLENBQUM7O0FBRUgsSUFBSSxDQUFDLElBQUksQ0FBQyxTQUFTLEVBQUUsQ0FBQyxPQUFPLENBQUMsRUFBRSxNQUFNO0FBQ3BDLE1BQUksQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLENBQUM7Q0FDckIsQ0FBQyxDQUFDIiwiZmlsZSI6Imd1bHBmaWxlLmJhYmVsLmpzIiwic291cmNlc0NvbnRlbnQiOlsiLy8gZ2VuZXJhdGVkIG9uIDIwMTUtMTEtMjcgdXNpbmcgZ2VuZXJhdG9yLWd1bHAtd2ViYXBwIDEuMC4zXG5pbXBvcnQgZ3VscCBmcm9tICdndWxwJztcbmltcG9ydCBndWxwTG9hZFBsdWdpbnMgZnJvbSAnZ3VscC1sb2FkLXBsdWdpbnMnO1xuaW1wb3J0IGJyb3dzZXJTeW5jIGZyb20gJ2Jyb3dzZXItc3luYyc7XG5pbXBvcnQgZGVsIGZyb20gJ2RlbCc7XG5pbXBvcnQge3N0cmVhbSBhcyB3aXJlZGVwfSBmcm9tICd3aXJlZGVwJztcblxuY29uc3QgJCA9IGd1bHBMb2FkUGx1Z2lucygpO1xuY29uc3QgcmVsb2FkID0gYnJvd3NlclN5bmMucmVsb2FkO1xuXG5ndWxwLnRhc2soJ3N0eWxlcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvc3R5bGVzLyouc2NzcycpXG4gICAgLnBpcGUoJC5wbHVtYmVyKCkpXG4gICAgLnBpcGUoJC5zb3VyY2VtYXBzLmluaXQoKSlcbiAgICAucGlwZSgkLnNhc3Muc3luYyh7XG4gICAgICBvdXRwdXRTdHlsZTogJ2V4cGFuZGVkJyxcbiAgICAgIHByZWNpc2lvbjogMTAsXG4gICAgICBpbmNsdWRlUGF0aHM6IFsnLiddXG4gICAgfSkub24oJ2Vycm9yJywgJC5zYXNzLmxvZ0Vycm9yKSlcbiAgICAucGlwZSgkLmF1dG9wcmVmaXhlcih7YnJvd3NlcnM6IFsnbGFzdCAxIHZlcnNpb24nXX0pKVxuICAgIC5waXBlKCQuc291cmNlbWFwcy53cml0ZSgpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnLnRtcC9zdHlsZXMnKSlcbiAgICAucGlwZShyZWxvYWQoe3N0cmVhbTogdHJ1ZX0pKTtcbn0pO1xuXG5mdW5jdGlvbiBsaW50KGZpbGVzLCBvcHRpb25zKSB7XG4gIHJldHVybiAoKSA9PiB7XG4gICAgcmV0dXJuIGd1bHAuc3JjKGZpbGVzKVxuICAgICAgLnBpcGUocmVsb2FkKHtzdHJlYW06IHRydWUsIG9uY2U6IHRydWV9KSlcbiAgICAgIC5waXBlKCQuZXNsaW50KG9wdGlvbnMpKVxuICAgICAgLnBpcGUoJC5lc2xpbnQuZm9ybWF0KCkpXG4gICAgICAucGlwZSgkLmlmKCFicm93c2VyU3luYy5hY3RpdmUsICQuZXNsaW50LmZhaWxBZnRlckVycm9yKCkpKTtcbiAgfTtcbn1cbmNvbnN0IHRlc3RMaW50T3B0aW9ucyA9IHtcbiAgZW52OiB7XG4gICAgbW9jaGE6IHRydWVcbiAgfVxufTtcblxuZ3VscC50YXNrKCdsaW50JywgbGludCgnYXBwL3NjcmlwdHMvKiovKi5qcycpKTtcbmd1bHAudGFzaygnbGludDp0ZXN0JywgbGludCgndGVzdC9zcGVjLyoqLyouanMnLCB0ZXN0TGludE9wdGlvbnMpKTtcblxuZ3VscC50YXNrKCdodG1sJywgWydzdHlsZXMnXSwgKCkgPT4ge1xuICBjb25zdCBhc3NldHMgPSAkLnVzZXJlZi5hc3NldHMoe3NlYXJjaFBhdGg6IFsnLnRtcCcsICdhcHAnLCAnLiddfSk7XG5cbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvKi5odG1sJylcbiAgICAucGlwZShhc3NldHMpXG4gICAgLnBpcGUoJC5pZignKi5qcycsICQudWdsaWZ5KCkpKVxuICAgIC5waXBlKCQuaWYoJyouY3NzJywgJC5taW5pZnlDc3Moe2NvbXBhdGliaWxpdHk6ICcqJ30pKSlcbiAgICAucGlwZShhc3NldHMucmVzdG9yZSgpKVxuICAgIC5waXBlKCQudXNlcmVmKCkpXG4gICAgLnBpcGUoJC5pZignKi5odG1sJywgJC5taW5pZnlIdG1sKHtjb25kaXRpb25hbHM6IHRydWUsIGxvb3NlOiB0cnVlfSkpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnZGlzdCcpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2ltYWdlcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvaW1hZ2VzLyoqLyonKVxuICAgIC5waXBlKCQuaWYoJC5pZi5pc0ZpbGUsICQuY2FjaGUoJC5pbWFnZW1pbih7XG4gICAgICBwcm9ncmVzc2l2ZTogdHJ1ZSxcbiAgICAgIGludGVybGFjZWQ6IHRydWUsXG4gICAgICAvLyBkb24ndCByZW1vdmUgSURzIGZyb20gU1ZHcywgdGhleSBhcmUgb2Z0ZW4gdXNlZFxuICAgICAgLy8gYXMgaG9va3MgZm9yIGVtYmVkZGluZyBhbmQgc3R5bGluZ1xuICAgICAgc3Znb1BsdWdpbnM6IFt7Y2xlYW51cElEczogZmFsc2V9XVxuICAgIH0pKVxuICAgIC5vbignZXJyb3InLCBmdW5jdGlvbiAoZXJyKSB7XG4gICAgICBjb25zb2xlLmxvZyhlcnIpO1xuICAgICAgdGhpcy5lbmQoKTtcbiAgICB9KSkpXG4gICAgLnBpcGUoZ3VscC5kZXN0KCdkaXN0L2ltYWdlcycpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2ZvbnRzJywgKCkgPT4ge1xuICByZXR1cm4gZ3VscC5zcmMocmVxdWlyZSgnbWFpbi1ib3dlci1maWxlcycpKHtcbiAgICBmaWx0ZXI6ICcqKi8qLntlb3Qsc3ZnLHR0Zix3b2ZmLHdvZmYyfSdcbiAgfSkuY29uY2F0KCdhcHAvZm9udHMvKiovKicpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnLnRtcC9mb250cycpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnZGlzdC9mb250cycpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2V4dHJhcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKFtcbiAgICAnYXBwLyouKicsXG4gICAgJyFhcHAvKi5odG1sJ1xuICBdLCB7XG4gICAgZG90OiB0cnVlXG4gIH0pLnBpcGUoZ3VscC5kZXN0KCdkaXN0JykpO1xufSk7XG5cbmd1bHAudGFzaygnY2xlYW4nLCBkZWwuYmluZChudWxsLCBbJy50bXAnLCAnZGlzdCddKSk7XG5cbmd1bHAudGFzaygnc2VydmUnLCBbJ3N0eWxlcycsICdmb250cyddLCAoKSA9PiB7XG4gIGJyb3dzZXJTeW5jKHtcbiAgICBub3RpZnk6IGZhbHNlLFxuICAgIHBvcnQ6IDkwMDAsXG4gICAgc2VydmVyOiB7XG4gICAgICBiYXNlRGlyOiBbJy50bXAnLCAnYXBwJ10sXG4gICAgICByb3V0ZXM6IHtcbiAgICAgICAgJy9ib3dlcl9jb21wb25lbnRzJzogJ2Jvd2VyX2NvbXBvbmVudHMnXG4gICAgICB9XG4gICAgfVxuICB9KTtcblxuICBndWxwLndhdGNoKFtcbiAgICAnYXBwLyouaHRtbCcsXG4gICAgJ2FwcC9zY3JpcHRzLyoqLyouanMnLFxuICAgICdhcHAvaW1hZ2VzLyoqLyonLFxuICAgICcudG1wL2ZvbnRzLyoqLyonXG4gIF0pLm9uKCdjaGFuZ2UnLCByZWxvYWQpO1xuXG4gIGd1bHAud2F0Y2goJ2FwcC9zdHlsZXMvKiovKi5zY3NzJywgWydzdHlsZXMnXSk7XG4gIGd1bHAud2F0Y2goJ2FwcC9mb250cy8qKi8qJywgWydmb250cyddKTtcbiAgZ3VscC53YXRjaCgnYm93ZXIuanNvbicsIFsnd2lyZWRlcCcsICdmb250cyddKTtcbn0pO1xuXG5ndWxwLnRhc2soJ3NlcnZlOmRpc3QnLCAoKSA9PiB7XG4gIGJyb3dzZXJTeW5jKHtcbiAgICBub3RpZnk6IGZhbHNlLFxuICAgIHBvcnQ6IDkwMDAsXG4gICAgc2VydmVyOiB7XG4gICAgICBiYXNlRGlyOiBbJ2Rpc3QnXVxuICAgIH1cbiAgfSk7XG59KTtcblxuZ3VscC50YXNrKCdzZXJ2ZTp0ZXN0JywgKCkgPT4ge1xuICBicm93c2VyU3luYyh7XG4gICAgbm90aWZ5OiBmYWxzZSxcbiAgICBwb3J0OiA5MDAwLFxuICAgIHVpOiBmYWxzZSxcbiAgICBzZXJ2ZXI6IHtcbiAgICAgIGJhc2VEaXI6ICd0ZXN0JyxcbiAgICAgIHJvdXRlczoge1xuICAgICAgICAnL2Jvd2VyX2NvbXBvbmVudHMnOiAnYm93ZXJfY29tcG9uZW50cydcbiAgICAgIH1cbiAgICB9XG4gIH0pO1xuXG4gIGd1bHAud2F0Y2goJ3Rlc3Qvc3BlYy8qKi8qLmpzJykub24oJ2NoYW5nZScsIHJlbG9hZCk7XG4gIGd1bHAud2F0Y2goJ3Rlc3Qvc3BlYy8qKi8qLmpzJywgWydsaW50OnRlc3QnXSk7XG59KTtcblxuLy8gaW5qZWN0IGJvd2VyIGNvbXBvbmVudHNcbmd1bHAudGFzaygnd2lyZWRlcCcsICgpID0+IHtcbiAgZ3VscC5zcmMoJ2FwcC9zdHlsZXMvKi5zY3NzJylcbiAgICAucGlwZSh3aXJlZGVwKHtcbiAgICAgIGlnbm9yZVBhdGg6IC9eKFxcLlxcLlxcLykrL1xuICAgIH0pKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnYXBwL3N0eWxlcycpKTtcblxuICBndWxwLnNyYygnYXBwLyouaHRtbCcpXG4gICAgLnBpcGUod2lyZWRlcCh7XG4gICAgICBleGNsdWRlOiBbJ2Jvb3RzdHJhcC1zYXNzJ10sXG4gICAgICBpZ25vcmVQYXRoOiAvXihcXC5cXC5cXC8pKlxcLlxcLi9cbiAgICB9KSlcbiAgICAucGlwZShndWxwLmRlc3QoJ2FwcCcpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2J1aWxkJywgWydsaW50JywgJ2h0bWwnLCAnaW1hZ2VzJywgJ2ZvbnRzJywgJ2V4dHJhcyddLCAoKSA9PiB7XG4gIHJldHVybiBndWxwLnNyYygnZGlzdC8qKi8qJykucGlwZSgkLnNpemUoe3RpdGxlOiAnYnVpbGQnLCBnemlwOiB0cnVlfSkpO1xufSk7XG5cbmd1bHAudGFzaygnZGVmYXVsdCcsIFsnY2xlYW4nXSwgKCkgPT4ge1xuICBndWxwLnN0YXJ0KCdidWlsZCcpO1xufSk7XG4iXX0=",
+    "ast": null,
+    "map": {
+      "version": 3,
+      "sources": [
+        "gulpfile.babel.js"
+      ],
+      "names": [],
+      "mappings": "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",
+      "file": "gulpfile.babel.js",
+      "sourcesContent": [
+        "// generated on 2015-11-27 using generator-gulp-webapp 1.0.3\nimport gulp from 'gulp';\nimport gulpLoadPlugins from 'gulp-load-plugins';\nimport browserSync from 'browser-sync';\nimport del from 'del';\nimport {stream as wiredep} from 'wiredep';\n\nconst $ = gulpLoadPlugins();\nconst reload = browserSync.reload;\n\ngulp.task('styles', () => {\n  return gulp.src('app/styles/*.scss')\n    .pipe($.plumber())\n    .pipe($.sourcemaps.init())\n    .pipe($.sass.sync({\n      outputStyle: 'expanded',\n      precision: 10,\n      includePaths: ['.']\n    }).on('error', $.sass.logError))\n    .pipe($.autoprefixer({browsers: ['last 1 version']}))\n    .pipe($.sourcemaps.write())\n    .pipe(gulp.dest('.tmp/styles'))\n    .pipe(reload({stream: true}));\n});\n\nfunction lint(files, options) {\n  return () => {\n    return gulp.src(files)\n      .pipe(reload({stream: true, once: true}))\n      .pipe($.eslint(options))\n      .pipe($.eslint.format())\n      .pipe($.if(!browserSync.active, $.eslint.failAfterError()));\n  };\n}\nconst testLintOptions = {\n  env: {\n    mocha: true\n  }\n};\n\ngulp.task('lint', lint('app/scripts/**/*.js'));\ngulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));\n\ngulp.task('html', ['styles'], () => {\n  const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});\n\n  return gulp.src('app/*.html')\n    .pipe(assets)\n    .pipe($.if('*.js', $.uglify()))\n    .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))\n    .pipe(assets.restore())\n    .pipe($.useref())\n    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))\n    .pipe(gulp.dest('dist'));\n});\n\ngulp.task('images', () => {\n  return gulp.src('app/images/**/*')\n    .pipe($.if($.if.isFile, $.cache($.imagemin({\n      progressive: true,\n      interlaced: true,\n      // don't remove IDs from SVGs, they are often used\n      // as hooks for embedding and styling\n      svgoPlugins: [{cleanupIDs: false}]\n    }))\n    .on('error', function (err) {\n      console.log(err);\n      this.end();\n    })))\n    .pipe(gulp.dest('dist/images'));\n});\n\ngulp.task('fonts', () => {\n  return gulp.src(require('main-bower-files')({\n    filter: '**/*.{eot,svg,ttf,woff,woff2}'\n  }).concat('app/fonts/**/*'))\n    .pipe(gulp.dest('.tmp/fonts'))\n    .pipe(gulp.dest('dist/fonts'));\n});\n\ngulp.task('extras', () => {\n  return gulp.src([\n    'app/*.*',\n    '!app/*.html'\n  ], {\n    dot: true\n  }).pipe(gulp.dest('dist'));\n});\n\ngulp.task('clean', del.bind(null, ['.tmp', 'dist']));\n\ngulp.task('serve', ['styles', 'fonts'], () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['.tmp', 'app'],\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch([\n    'app/*.html',\n    'app/scripts/**/*.js',\n    'app/images/**/*',\n    '.tmp/fonts/**/*'\n  ]).on('change', reload);\n\n  gulp.watch('app/styles/**/*.scss', ['styles']);\n  gulp.watch('app/fonts/**/*', ['fonts']);\n  gulp.watch('bower.json', ['wiredep', 'fonts']);\n});\n\ngulp.task('serve:dist', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['dist']\n    }\n  });\n});\n\ngulp.task('serve:test', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    ui: false,\n    server: {\n      baseDir: 'test',\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch('test/spec/**/*.js').on('change', reload);\n  gulp.watch('test/spec/**/*.js', ['lint:test']);\n});\n\n// inject bower components\ngulp.task('wiredep', () => {\n  gulp.src('app/styles/*.scss')\n    .pipe(wiredep({\n      ignorePath: /^(\\.\\.\\/)+/\n    }))\n    .pipe(gulp.dest('app/styles'));\n\n  gulp.src('app/*.html')\n    .pipe(wiredep({\n      exclude: ['bootstrap-sass'],\n      ignorePath: /^(\\.\\.\\/)*\\.\\./\n    }))\n    .pipe(gulp.dest('app'));\n});\n\ngulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {\n  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));\n});\n\ngulp.task('default', ['clean'], () => {\n  gulp.start('build');\n});\n"
+      ]
+    },
+    "mtime": 1448644822577
+  },
+  "{\"filename\":\"/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js\",\"env\":{},\"retainLines\":false,\"highlightCode\":true,\"suppressDeprecationMessages\":false,\"presets\":[],\"plugins\":[[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],null],[[],{\"async\":false,\"asyncGenerators\":false}]],\"ignore\":[],\"code\":true,\"metadata\":true,\"ast\":true,\"comments\":true,\"compact\":\"auto\",\"babelrc\":true,\"sourceType\":\"module\",\"moduleIds\":false}:6.2.1": {
+    "metadata": {
+      "usedHelpers": [
+        "interopRequireDefault"
+      ],
+      "marked": [],
+      "modules": {
+        "imports": [
+          {
+            "source": "gulp",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "gulp"
+              }
+            ]
+          },
+          {
+            "source": "gulp-load-plugins",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "gulpLoadPlugins"
+              }
+            ]
+          },
+          {
+            "source": "browser-sync",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "browserSync"
+              }
+            ]
+          },
+          {
+            "source": "del",
+            "imported": [
+              "default"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "default",
+                "local": "del"
+              }
+            ]
+          },
+          {
+            "source": "wiredep",
+            "imported": [
+              "stream"
+            ],
+            "specifiers": [
+              {
+                "kind": "named",
+                "imported": "stream",
+                "local": "wiredep"
+              }
+            ]
+          }
+        ],
+        "exports": {
+          "exported": [],
+          "specifiers": []
+        }
+      }
+    },
+    "options": {
+      "filename": "/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js",
+      "filenameRelative": "/home/cyrillius/Documents/sites/testyo/gulpfile.babel.js",
+      "env": {},
+      "retainLines": false,
+      "highlightCode": true,
+      "suppressDeprecationMessages": false,
+      "presets": [],
+      "plugins": [
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          {
+            "async": false,
+            "asyncGenerators": false
+          }
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          null
+        ],
+        [
+          [],
+          {
+            "async": false,
+            "asyncGenerators": false
+          }
+        ]
+      ],
+      "ignore": [],
+      "code": true,
+      "metadata": true,
+      "ast": false,
+      "comments": true,
+      "compact": "auto",
+      "sourceMap": "both",
+      "sourceMaps": "both",
+      "sourceMapTarget": "gulpfile.babel.js",
+      "sourceFileName": "gulpfile.babel.js",
+      "babelrc": true,
+      "sourceType": "module",
+      "moduleIds": false,
+      "basename": "gulpfile.babel"
+    },
+    "ignored": false,
+    "code": "'use strict';\n\nvar _gulp = require('gulp');\n\nvar _gulp2 = _interopRequireDefault(_gulp);\n\nvar _gulpLoadPlugins = require('gulp-load-plugins');\n\nvar _gulpLoadPlugins2 = _interopRequireDefault(_gulpLoadPlugins);\n\nvar _browserSync = require('browser-sync');\n\nvar _browserSync2 = _interopRequireDefault(_browserSync);\n\nvar _del = require('del');\n\nvar _del2 = _interopRequireDefault(_del);\n\nvar _wiredep = require('wiredep');\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar $ = (0, _gulpLoadPlugins2.default)(); // generated on 2015-11-27 using generator-gulp-webapp 1.0.3\n\nvar reload = _browserSync2.default.reload;\n\n_gulp2.default.task('styles', function () {\n  return _gulp2.default.src('app/styles/*.scss').pipe($.plumber()).pipe($.sourcemaps.init()).pipe($.sass.sync({\n    outputStyle: 'expanded',\n    precision: 10,\n    includePaths: ['.']\n  }).on('error', $.sass.logError)).pipe($.autoprefixer({ browsers: ['last 1 version'] })).pipe($.sourcemaps.write()).pipe(_gulp2.default.dest('.tmp/styles')).pipe(reload({ stream: true }));\n});\n\nfunction lint(files, options) {\n  return function () {\n    return _gulp2.default.src(files).pipe(reload({ stream: true, once: true })).pipe($.eslint(options)).pipe($.eslint.format()).pipe($.if(!_browserSync2.default.active, $.eslint.failAfterError()));\n  };\n}\nvar testLintOptions = {\n  env: {\n    mocha: true\n  }\n};\n\n_gulp2.default.task('lint', lint('app/scripts/**/*.js'));\n_gulp2.default.task('lint:test', lint('test/spec/**/*.js', testLintOptions));\n\n_gulp2.default.task('html', ['styles'], function () {\n  var assets = $.useref.assets({ searchPath: ['.tmp', 'app', '.'] });\n\n  return _gulp2.default.src('app/*.html').pipe(assets).pipe($.if('*.js', $.uglify())).pipe($.if('*.css', $.minifyCss({ compatibility: '*' }))).pipe(assets.restore()).pipe($.useref()).pipe($.if('*.html', $.minifyHtml({ conditionals: true, loose: true }))).pipe(_gulp2.default.dest('dist'));\n});\n\n_gulp2.default.task('images', function () {\n  return _gulp2.default.src('app/images/**/*').pipe($.if($.if.isFile, $.cache($.imagemin({\n    progressive: true,\n    interlaced: true,\n    // don't remove IDs from SVGs, they are often used\n    // as hooks for embedding and styling\n    svgoPlugins: [{ cleanupIDs: false }]\n  })).on('error', function (err) {\n    console.log(err);\n    this.end();\n  }))).pipe(_gulp2.default.dest('dist/images'));\n});\n\n_gulp2.default.task('fonts', function () {\n  return _gulp2.default.src(require('main-bower-files')({\n    filter: '**/*.{eot,svg,ttf,woff,woff2}'\n  }).concat('app/fonts/**/*')).pipe(_gulp2.default.dest('.tmp/fonts')).pipe(_gulp2.default.dest('dist/fonts'));\n});\n\n_gulp2.default.task('extras', function () {\n  return _gulp2.default.src(['app/*.*', '!app/*.html'], {\n    dot: true\n  }).pipe(_gulp2.default.dest('dist'));\n});\n\n_gulp2.default.task('clean', _del2.default.bind(null, ['.tmp', 'dist']));\n\n_gulp2.default.task('serve', ['styles', 'fonts'], function () {\n  (0, _browserSync2.default)({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['.tmp', 'app'],\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  _gulp2.default.watch(['app/*.html', 'app/scripts/**/*.js', 'app/images/**/*', '.tmp/fonts/**/*']).on('change', reload);\n\n  _gulp2.default.watch('app/styles/**/*.scss', ['styles']);\n  _gulp2.default.watch('app/fonts/**/*', ['fonts']);\n  _gulp2.default.watch('bower.json', ['wiredep', 'fonts']);\n});\n\n_gulp2.default.task('serve:dist', function () {\n  (0, _browserSync2.default)({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['dist']\n    }\n  });\n});\n\n_gulp2.default.task('serve:test', function () {\n  (0, _browserSync2.default)({\n    notify: false,\n    port: 9000,\n    ui: false,\n    server: {\n      baseDir: 'test',\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  _gulp2.default.watch('test/spec/**/*.js').on('change', reload);\n  _gulp2.default.watch('test/spec/**/*.js', ['lint:test']);\n});\n\n// inject bower components\n_gulp2.default.task('wiredep', function () {\n  _gulp2.default.src('app/styles/*.scss').pipe((0, _wiredep.stream)({\n    ignorePath: /^(\\.\\.\\/)+/\n  })).pipe(_gulp2.default.dest('app/styles'));\n\n  _gulp2.default.src('app/*.html').pipe((0, _wiredep.stream)({\n    exclude: ['bootstrap-sass'],\n    ignorePath: /^(\\.\\.\\/)*\\.\\./\n  })).pipe(_gulp2.default.dest('app'));\n});\n\n_gulp2.default.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], function () {\n  return _gulp2.default.src('dist/**/*').pipe($.size({ title: 'build', gzip: true }));\n});\n\n_gulp2.default.task('default', ['clean'], function () {\n  _gulp2.default.start('build');\n});\n//# sourceMappingURL=data:application/json;base64,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QUFFLGdCQUFnQjtHQUM3QixDQUFDLENBQUMsQ0FDRixJQUFJLENBQUMsZUFBSyxJQUFJLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQztDQUMzQixDQUFDLENBQUM7O0FBRUgsZUFBSyxJQUFJLENBQUMsT0FBTyxFQUFFLENBQUMsTUFBTSxFQUFFLE1BQU0sRUFBRSxRQUFRLEVBQUUsT0FBTyxFQUFFLFFBQVEsQ0FBQyxFQUFFLFlBQU07QUFDdEUsU0FBTyxlQUFLLEdBQUcsQ0FBQyxXQUFXLENBQUMsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDLElBQUksQ0FBQyxFQUFDLEtBQUssRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBQyxDQUFDLENBQUMsQ0FBQztDQUN6RSxDQUFDLENBQUM7O0FBRUgsZUFBSyxJQUFJLENBQUMsU0FBUyxFQUFFLENBQUMsT0FBTyxDQUFDLEVBQUUsWUFBTTtBQUNwQyxpQkFBSyxLQUFLLENBQUMsT0FBTyxDQUFDLENBQUM7Q0FDckIsQ0FBQyxDQUFDIiwiZmlsZSI6Imd1bHBmaWxlLmJhYmVsLmpzIiwic291cmNlc0NvbnRlbnQiOlsiLy8gZ2VuZXJhdGVkIG9uIDIwMTUtMTEtMjcgdXNpbmcgZ2VuZXJhdG9yLWd1bHAtd2ViYXBwIDEuMC4zXG5pbXBvcnQgZ3VscCBmcm9tICdndWxwJztcbmltcG9ydCBndWxwTG9hZFBsdWdpbnMgZnJvbSAnZ3VscC1sb2FkLXBsdWdpbnMnO1xuaW1wb3J0IGJyb3dzZXJTeW5jIGZyb20gJ2Jyb3dzZXItc3luYyc7XG5pbXBvcnQgZGVsIGZyb20gJ2RlbCc7XG5pbXBvcnQge3N0cmVhbSBhcyB3aXJlZGVwfSBmcm9tICd3aXJlZGVwJztcblxuY29uc3QgJCA9IGd1bHBMb2FkUGx1Z2lucygpO1xuY29uc3QgcmVsb2FkID0gYnJvd3NlclN5bmMucmVsb2FkO1xuXG5ndWxwLnRhc2soJ3N0eWxlcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvc3R5bGVzLyouc2NzcycpXG4gICAgLnBpcGUoJC5wbHVtYmVyKCkpXG4gICAgLnBpcGUoJC5zb3VyY2VtYXBzLmluaXQoKSlcbiAgICAucGlwZSgkLnNhc3Muc3luYyh7XG4gICAgICBvdXRwdXRTdHlsZTogJ2V4cGFuZGVkJyxcbiAgICAgIHByZWNpc2lvbjogMTAsXG4gICAgICBpbmNsdWRlUGF0aHM6IFsnLiddXG4gICAgfSkub24oJ2Vycm9yJywgJC5zYXNzLmxvZ0Vycm9yKSlcbiAgICAucGlwZSgkLmF1dG9wcmVmaXhlcih7YnJvd3NlcnM6IFsnbGFzdCAxIHZlcnNpb24nXX0pKVxuICAgIC5waXBlKCQuc291cmNlbWFwcy53cml0ZSgpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnLnRtcC9zdHlsZXMnKSlcbiAgICAucGlwZShyZWxvYWQoe3N0cmVhbTogdHJ1ZX0pKTtcbn0pO1xuXG5mdW5jdGlvbiBsaW50KGZpbGVzLCBvcHRpb25zKSB7XG4gIHJldHVybiAoKSA9PiB7XG4gICAgcmV0dXJuIGd1bHAuc3JjKGZpbGVzKVxuICAgICAgLnBpcGUocmVsb2FkKHtzdHJlYW06IHRydWUsIG9uY2U6IHRydWV9KSlcbiAgICAgIC5waXBlKCQuZXNsaW50KG9wdGlvbnMpKVxuICAgICAgLnBpcGUoJC5lc2xpbnQuZm9ybWF0KCkpXG4gICAgICAucGlwZSgkLmlmKCFicm93c2VyU3luYy5hY3RpdmUsICQuZXNsaW50LmZhaWxBZnRlckVycm9yKCkpKTtcbiAgfTtcbn1cbmNvbnN0IHRlc3RMaW50T3B0aW9ucyA9IHtcbiAgZW52OiB7XG4gICAgbW9jaGE6IHRydWVcbiAgfVxufTtcblxuZ3VscC50YXNrKCdsaW50JywgbGludCgnYXBwL3NjcmlwdHMvKiovKi5qcycpKTtcbmd1bHAudGFzaygnbGludDp0ZXN0JywgbGludCgndGVzdC9zcGVjLyoqLyouanMnLCB0ZXN0TGludE9wdGlvbnMpKTtcblxuZ3VscC50YXNrKCdodG1sJywgWydzdHlsZXMnXSwgKCkgPT4ge1xuICBjb25zdCBhc3NldHMgPSAkLnVzZXJlZi5hc3NldHMoe3NlYXJjaFBhdGg6IFsnLnRtcCcsICdhcHAnLCAnLiddfSk7XG5cbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvKi5odG1sJylcbiAgICAucGlwZShhc3NldHMpXG4gICAgLnBpcGUoJC5pZignKi5qcycsICQudWdsaWZ5KCkpKVxuICAgIC5waXBlKCQuaWYoJyouY3NzJywgJC5taW5pZnlDc3Moe2NvbXBhdGliaWxpdHk6ICcqJ30pKSlcbiAgICAucGlwZShhc3NldHMucmVzdG9yZSgpKVxuICAgIC5waXBlKCQudXNlcmVmKCkpXG4gICAgLnBpcGUoJC5pZignKi5odG1sJywgJC5taW5pZnlIdG1sKHtjb25kaXRpb25hbHM6IHRydWUsIGxvb3NlOiB0cnVlfSkpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnZGlzdCcpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2ltYWdlcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKCdhcHAvaW1hZ2VzLyoqLyonKVxuICAgIC5waXBlKCQuaWYoJC5pZi5pc0ZpbGUsICQuY2FjaGUoJC5pbWFnZW1pbih7XG4gICAgICBwcm9ncmVzc2l2ZTogdHJ1ZSxcbiAgICAgIGludGVybGFjZWQ6IHRydWUsXG4gICAgICAvLyBkb24ndCByZW1vdmUgSURzIGZyb20gU1ZHcywgdGhleSBhcmUgb2Z0ZW4gdXNlZFxuICAgICAgLy8gYXMgaG9va3MgZm9yIGVtYmVkZGluZyBhbmQgc3R5bGluZ1xuICAgICAgc3Znb1BsdWdpbnM6IFt7Y2xlYW51cElEczogZmFsc2V9XVxuICAgIH0pKVxuICAgIC5vbignZXJyb3InLCBmdW5jdGlvbiAoZXJyKSB7XG4gICAgICBjb25zb2xlLmxvZyhlcnIpO1xuICAgICAgdGhpcy5lbmQoKTtcbiAgICB9KSkpXG4gICAgLnBpcGUoZ3VscC5kZXN0KCdkaXN0L2ltYWdlcycpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2ZvbnRzJywgKCkgPT4ge1xuICByZXR1cm4gZ3VscC5zcmMocmVxdWlyZSgnbWFpbi1ib3dlci1maWxlcycpKHtcbiAgICBmaWx0ZXI6ICcqKi8qLntlb3Qsc3ZnLHR0Zix3b2ZmLHdvZmYyfSdcbiAgfSkuY29uY2F0KCdhcHAvZm9udHMvKiovKicpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnLnRtcC9mb250cycpKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnZGlzdC9mb250cycpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2V4dHJhcycsICgpID0+IHtcbiAgcmV0dXJuIGd1bHAuc3JjKFtcbiAgICAnYXBwLyouKicsXG4gICAgJyFhcHAvKi5odG1sJ1xuICBdLCB7XG4gICAgZG90OiB0cnVlXG4gIH0pLnBpcGUoZ3VscC5kZXN0KCdkaXN0JykpO1xufSk7XG5cbmd1bHAudGFzaygnY2xlYW4nLCBkZWwuYmluZChudWxsLCBbJy50bXAnLCAnZGlzdCddKSk7XG5cbmd1bHAudGFzaygnc2VydmUnLCBbJ3N0eWxlcycsICdmb250cyddLCAoKSA9PiB7XG4gIGJyb3dzZXJTeW5jKHtcbiAgICBub3RpZnk6IGZhbHNlLFxuICAgIHBvcnQ6IDkwMDAsXG4gICAgc2VydmVyOiB7XG4gICAgICBiYXNlRGlyOiBbJy50bXAnLCAnYXBwJ10sXG4gICAgICByb3V0ZXM6IHtcbiAgICAgICAgJy9ib3dlcl9jb21wb25lbnRzJzogJ2Jvd2VyX2NvbXBvbmVudHMnXG4gICAgICB9XG4gICAgfVxuICB9KTtcblxuICBndWxwLndhdGNoKFtcbiAgICAnYXBwLyouaHRtbCcsXG4gICAgJ2FwcC9zY3JpcHRzLyoqLyouanMnLFxuICAgICdhcHAvaW1hZ2VzLyoqLyonLFxuICAgICcudG1wL2ZvbnRzLyoqLyonXG4gIF0pLm9uKCdjaGFuZ2UnLCByZWxvYWQpO1xuXG4gIGd1bHAud2F0Y2goJ2FwcC9zdHlsZXMvKiovKi5zY3NzJywgWydzdHlsZXMnXSk7XG4gIGd1bHAud2F0Y2goJ2FwcC9mb250cy8qKi8qJywgWydmb250cyddKTtcbiAgZ3VscC53YXRjaCgnYm93ZXIuanNvbicsIFsnd2lyZWRlcCcsICdmb250cyddKTtcbn0pO1xuXG5ndWxwLnRhc2soJ3NlcnZlOmRpc3QnLCAoKSA9PiB7XG4gIGJyb3dzZXJTeW5jKHtcbiAgICBub3RpZnk6IGZhbHNlLFxuICAgIHBvcnQ6IDkwMDAsXG4gICAgc2VydmVyOiB7XG4gICAgICBiYXNlRGlyOiBbJ2Rpc3QnXVxuICAgIH1cbiAgfSk7XG59KTtcblxuZ3VscC50YXNrKCdzZXJ2ZTp0ZXN0JywgKCkgPT4ge1xuICBicm93c2VyU3luYyh7XG4gICAgbm90aWZ5OiBmYWxzZSxcbiAgICBwb3J0OiA5MDAwLFxuICAgIHVpOiBmYWxzZSxcbiAgICBzZXJ2ZXI6IHtcbiAgICAgIGJhc2VEaXI6ICd0ZXN0JyxcbiAgICAgIHJvdXRlczoge1xuICAgICAgICAnL2Jvd2VyX2NvbXBvbmVudHMnOiAnYm93ZXJfY29tcG9uZW50cydcbiAgICAgIH1cbiAgICB9XG4gIH0pO1xuXG4gIGd1bHAud2F0Y2goJ3Rlc3Qvc3BlYy8qKi8qLmpzJykub24oJ2NoYW5nZScsIHJlbG9hZCk7XG4gIGd1bHAud2F0Y2goJ3Rlc3Qvc3BlYy8qKi8qLmpzJywgWydsaW50OnRlc3QnXSk7XG59KTtcblxuLy8gaW5qZWN0IGJvd2VyIGNvbXBvbmVudHNcbmd1bHAudGFzaygnd2lyZWRlcCcsICgpID0+IHtcbiAgZ3VscC5zcmMoJ2FwcC9zdHlsZXMvKi5zY3NzJylcbiAgICAucGlwZSh3aXJlZGVwKHtcbiAgICAgIGlnbm9yZVBhdGg6IC9eKFxcLlxcLlxcLykrL1xuICAgIH0pKVxuICAgIC5waXBlKGd1bHAuZGVzdCgnYXBwL3N0eWxlcycpKTtcblxuICBndWxwLnNyYygnYXBwLyouaHRtbCcpXG4gICAgLnBpcGUod2lyZWRlcCh7XG4gICAgICBleGNsdWRlOiBbJ2Jvb3RzdHJhcC1zYXNzJ10sXG4gICAgICBpZ25vcmVQYXRoOiAvXihcXC5cXC5cXC8pKlxcLlxcLi9cbiAgICB9KSlcbiAgICAucGlwZShndWxwLmRlc3QoJ2FwcCcpKTtcbn0pO1xuXG5ndWxwLnRhc2soJ2J1aWxkJywgWydsaW50JywgJ2h0bWwnLCAnaW1hZ2VzJywgJ2ZvbnRzJywgJ2V4dHJhcyddLCAoKSA9PiB7XG4gIHJldHVybiBndWxwLnNyYygnZGlzdC8qKi8qJykucGlwZSgkLnNpemUoe3RpdGxlOiAnYnVpbGQnLCBnemlwOiB0cnVlfSkpO1xufSk7XG5cbmd1bHAudGFzaygnZGVmYXVsdCcsIFsnY2xlYW4nXSwgKCkgPT4ge1xuICBndWxwLnN0YXJ0KCdidWlsZCcpO1xufSk7XG4iXX0=",
+    "ast": null,
+    "map": {
+      "version": 3,
+      "sources": [
+        "gulpfile.babel.js"
+      ],
+      "names": [],
+      "mappings": "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",
+      "file": "gulpfile.babel.js",
+      "sourcesContent": [
+        "// generated on 2015-11-27 using generator-gulp-webapp 1.0.3\nimport gulp from 'gulp';\nimport gulpLoadPlugins from 'gulp-load-plugins';\nimport browserSync from 'browser-sync';\nimport del from 'del';\nimport {stream as wiredep} from 'wiredep';\n\nconst $ = gulpLoadPlugins();\nconst reload = browserSync.reload;\n\ngulp.task('styles', () => {\n  return gulp.src('app/styles/*.scss')\n    .pipe($.plumber())\n    .pipe($.sourcemaps.init())\n    .pipe($.sass.sync({\n      outputStyle: 'expanded',\n      precision: 10,\n      includePaths: ['.']\n    }).on('error', $.sass.logError))\n    .pipe($.autoprefixer({browsers: ['last 1 version']}))\n    .pipe($.sourcemaps.write())\n    .pipe(gulp.dest('.tmp/styles'))\n    .pipe(reload({stream: true}));\n});\n\nfunction lint(files, options) {\n  return () => {\n    return gulp.src(files)\n      .pipe(reload({stream: true, once: true}))\n      .pipe($.eslint(options))\n      .pipe($.eslint.format())\n      .pipe($.if(!browserSync.active, $.eslint.failAfterError()));\n  };\n}\nconst testLintOptions = {\n  env: {\n    mocha: true\n  }\n};\n\ngulp.task('lint', lint('app/scripts/**/*.js'));\ngulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));\n\ngulp.task('html', ['styles'], () => {\n  const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});\n\n  return gulp.src('app/*.html')\n    .pipe(assets)\n    .pipe($.if('*.js', $.uglify()))\n    .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))\n    .pipe(assets.restore())\n    .pipe($.useref())\n    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))\n    .pipe(gulp.dest('dist'));\n});\n\ngulp.task('images', () => {\n  return gulp.src('app/images/**/*')\n    .pipe($.if($.if.isFile, $.cache($.imagemin({\n      progressive: true,\n      interlaced: true,\n      // don't remove IDs from SVGs, they are often used\n      // as hooks for embedding and styling\n      svgoPlugins: [{cleanupIDs: false}]\n    }))\n    .on('error', function (err) {\n      console.log(err);\n      this.end();\n    })))\n    .pipe(gulp.dest('dist/images'));\n});\n\ngulp.task('fonts', () => {\n  return gulp.src(require('main-bower-files')({\n    filter: '**/*.{eot,svg,ttf,woff,woff2}'\n  }).concat('app/fonts/**/*'))\n    .pipe(gulp.dest('.tmp/fonts'))\n    .pipe(gulp.dest('dist/fonts'));\n});\n\ngulp.task('extras', () => {\n  return gulp.src([\n    'app/*.*',\n    '!app/*.html'\n  ], {\n    dot: true\n  }).pipe(gulp.dest('dist'));\n});\n\ngulp.task('clean', del.bind(null, ['.tmp', 'dist']));\n\ngulp.task('serve', ['styles', 'fonts'], () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['.tmp', 'app'],\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch([\n    'app/*.html',\n    'app/scripts/**/*.js',\n    'app/images/**/*',\n    '.tmp/fonts/**/*'\n  ]).on('change', reload);\n\n  gulp.watch('app/styles/**/*.scss', ['styles']);\n  gulp.watch('app/fonts/**/*', ['fonts']);\n  gulp.watch('bower.json', ['wiredep', 'fonts']);\n});\n\ngulp.task('serve:dist', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    server: {\n      baseDir: ['dist']\n    }\n  });\n});\n\ngulp.task('serve:test', () => {\n  browserSync({\n    notify: false,\n    port: 9000,\n    ui: false,\n    server: {\n      baseDir: 'test',\n      routes: {\n        '/bower_components': 'bower_components'\n      }\n    }\n  });\n\n  gulp.watch('test/spec/**/*.js').on('change', reload);\n  gulp.watch('test/spec/**/*.js', ['lint:test']);\n});\n\n// inject bower components\ngulp.task('wiredep', () => {\n  gulp.src('app/styles/*.scss')\n    .pipe(wiredep({\n      ignorePath: /^(\\.\\.\\/)+/\n    }))\n    .pipe(gulp.dest('app/styles'));\n\n  gulp.src('app/*.html')\n    .pipe(wiredep({\n      exclude: ['bootstrap-sass'],\n      ignorePath: /^(\\.\\.\\/)*\\.\\./\n    }))\n    .pipe(gulp.dest('app'));\n});\n\ngulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {\n  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));\n});\n\ngulp.task('default', ['clean'], () => {\n  gulp.start('build');\n});\n"
+      ]
+    },
+    "mtime": 1448644822577
+  }
+}

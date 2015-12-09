@@ -1,0 +1,136 @@
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+#myNav {
+  position: absolute;
+  top: 140px;
+  left: 20px;
+  z-index: 20;
+  min-width:250px;
+  margin-top: 20px;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+#myNav > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+#myNav .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+#myNav .navbar .container {
+  width: auto;
+}
+
+.nav li a:hover,
+.nav li a:focus {
+  color:white;
+  background-color: transparent;
+}
+
+.nav {
+  li.bcolor1{
+
+      color: $color1-ft ;
+      background-color: $color1-bg; 
+
+    a {
+      color: $color1-ft ;
+      background-color: $color1-bg; 
+    }
+    a:hover, a:focus {
+      color: $color1-ft ;
+      background-color: $color1-bg-hover;      
+    }
+  }
+  li.bcolor2{
+
+      color: $color2-ft ;
+      background-color: $color2-bg; 
+
+    a {
+      color: $color2-ft ;
+      background-color: $color2-bg; 
+    }
+    a:hover, a:focus {
+      color: $color2-ft ;
+      background-color: $color2-bg-hover;      
+    }
+  }
+  li.bcolor3{
+
+      color: $color3-ft ;
+      background-color: $color3-bg;
+
+    a {
+      color: $color3-ft ;
+      background-color: $color3-bg; 
+    }
+    a:hover, a:focus {
+      color: $color3-ft ;
+      background-color: $color3-bg-hover;      
+    }
+  }
+  li.bcolor4{
+
+      color: $color4-ft ;
+      background-color: $color4-bg; 
+
+    a {
+      color: $color4-ft ;
+      background-color: $color4-bg; 
+    }
+    a:hover, a:focus {
+      color: $color4-ft ;
+      background-color: $color4-bg-hover;      
+    }
+  }
+}
+
+#myNav .nav > li > p{
+  width:40%;
+  padding-left:15px;
+}
+#myNav .nav > li > ul{
+  width:60%;
+} 
+
+#myNav .nav li a{
+  width: 100%;
+}
+
+#myNav .nav li{
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+@media (max-width: 1400px){
+  #myNav ul{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  #myNav {
+    left:0;
+    right:0;
+  }
+  #myNav > ul > li{
+    width:95%;
+    margin:auto;
+    padding:0;
+  }
+  #myNav .nav > li > p{
+    width:10%;
+    padding-left:15px;
+  }
+  #myNav .nav > li > ul{
+    width:90%;
+  } 
+}

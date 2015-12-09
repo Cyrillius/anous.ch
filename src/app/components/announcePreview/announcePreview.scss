@@ -1,0 +1,118 @@
+#myAnnouncePreview{
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap:wrap;
+  background-color:white;
+  border:solid 1px black;
+  border-radius:5px;
+  padding:20px;
+
+  width:100%;
+
+  .announce.offres {
+    border: 2px solid $color2-bg; 
+    .category{
+      background-color: $color2-bg;
+      color: $color2-ft;     
+    }
+    .triangle{
+      border-top: 20px solid $color2-bg;    
+    }
+  }
+  .announce.demandes{
+    border: 2px solid $color3-bg; 
+    .category{
+      background-color: $color3-bg;
+      color: $color3-ft;     
+    }
+    .triangle{
+      border-top: 20px solid $color3-bg;    
+    }
+  }
+  .announce.conseils{
+    border: 2px solid $color4-bg; 
+    .category{
+      background-color: $color4-bg;
+      color: $color4-ft;     
+    }
+    .triangle{
+      border-top: 20px solid $color4-bg;    
+    }
+  }
+  .announce.divers{
+    border: 2px solid $color1-bg; 
+    .category{
+      background-color: $color1-bg;
+      color: $color1-ft;     
+    }
+    .triangle{
+      border-top: 20px solid $color1-bg;    
+    }
+  }
+
+
+  
+  .announce{
+    margin:0px 5px 10px 5px;
+    width:300px;
+    height:320px;
+    background-color:white;
+    border-radius:5px;
+
+    .category{
+      position:relative;
+      height:20px;
+      width:60%;
+      z-index:20;
+      padding-left:10px;
+    }
+
+    .triangle{
+        position:relative;
+        float:left;
+        top:-20px;
+        left:60%;
+        width: 0; 
+        height: 0; 
+        border-right: 20px solid transparent;
+        z-index:20;
+    }
+
+    .image{
+      position:relative;
+      top:-20px;
+      background-size: cover;
+      height:130px;
+      width:296px;
+      z-index:1;
+      background-position: 50%;
+      margin: 0 auto;
+      margin-bottom:-20px;
+
+
+      img{
+        display:none;
+      }
+    }
+    .title{
+      margin:10px;
+      padding-top:5px; 
+    }
+    .description{
+      margin:10px; 
+      display: -webkit-box;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      -ms-text-overflow:ellipsis;
+      height:80px;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+    .btn{
+      margin-left:5px;
+    }
+  }
+}

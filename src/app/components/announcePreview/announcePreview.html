@@ -1,0 +1,12 @@
+<div id="myAnnouncePreview">
+
+  <div ng-repeat="announce in anprCtrl.announces" ng-class="['{{announce.category['0']}}']" class="announce">
+    <div class="category">{{announce.category_name}}</div>
+    <div class="triangle"></div>
+    <div class="image" ng-style="{'background-image':'url({{announce.image}})'}"><img ng-src="{{announce.image}}"></div>
+    <h3 class="title">{{announce.title}}</h3>
+    <p class="description">{{announce.description}}</p>
+    <p><a class="btn btn-default" href="#" role="button">View details »</a></p>
+  </div>
+
+</div>

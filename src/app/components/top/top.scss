@@ -1,0 +1,52 @@
+#myTop {
+  top: 0;
+  left: 0;
+  height:140px;
+  margin-top:0px;
+  margin-bottom: 20px;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: $color1-bg;
+  justify-content: space-around; 
+
+  .top-left{
+    padding:5px;
+    width:20%;   
+    color: $color1-ft;
+    background-color: $color1-bg;
+    border-radius:5px;
+    min-width:340px;
+    line-height:90%;
+
+  }
+
+  .top-left .btn {
+    line-height:80%;
+    margin-top:10px;
+  }
+
+  .top-left.auth button {
+      margin-left: 0px;
+  }
+  .top-left.noauth button {
+      margin-left: 20px;
+  }
+
+  .top-center{
+    
+  }
+  .top-right{
+    padding:5px;
+    width:20%;   
+    color: $color2-ft;
+    background-color: $color2-bg;
+    border-radius:5px;
+    min-width:340px;
+    button {
+        width:100px;
+        margin:25px 0px;
+    }
+  }
+
+}
